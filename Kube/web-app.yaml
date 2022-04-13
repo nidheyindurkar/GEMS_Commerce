@@ -1,0 +1,69 @@
+# apiVersion: app/v1
+# kind: Deployment
+# metadata:
+#   name: angular-app
+# spec:
+#   replicas: 1
+#   template:
+#     metadata:
+#       labels:
+#         label-key : angular-app  
+#     spec:
+#       containers:
+#         - name: angular-app
+#           image: nidhey27/ecom-web-app
+#           imagePullPolicy: Always
+#           ports:
+#           - containerPort: 80
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   labels:
+#     service-label-key: angular-app
+#   name: angular-app
+# spec:
+#   type: ClusterIP
+#   ports:
+#   - name: angular-app
+#     port: 80
+#     protocol: TCP
+#   selector:
+#     deployment-label-key: angular-app
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+  labels:
+    app: webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: nidhey27/ecom-web-app
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+spec:
+  type: NodePort
+  selector:
+    app: webapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 31000
+  selector:
+    deployment-label-key: webapp
